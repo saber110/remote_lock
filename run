@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "welcome,runing service"
+
+while :
+do
+  php unlock.php >> scan.log
+  if [ $? -ne 0 ]
+  then
+    echo "error,aborting"
+    exit 1
+  fi
+done

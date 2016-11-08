@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>select2-4.0.0 示例</title>  
+    <link href="css/select2.min.css" rel="stylesheet" />
+<script src="js/jquery.1.11.2.min.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/i18n/zh-CN.js"></script>
+	
+</head>
+<body>
+    <div> 
+        select2: <select id="test1"   style="width: 20%" multiple="multiple">
+            <option ></option> 
+            <option value="2">222222</option>  
+            <option value="3">33223333</option>
+            <option value="4">333333</option>
+            <option value="5">223333</option>
+            <option value="6">444444</option>
+            <option value="7">555555</option>  
+            <option value="8">666666</option>
+            <option value="9">777777</option>
+            <option value="10">98888888888888888888888888888888888777777</option>
+        </select>
+        <button id="clear2"  >清除</button>
+        <button id="setValue"  >设置777777</button>
+        <button id="getValue"  >获取</button>
+        <button id="enable"  >enable</button>
+        <button id="disable"  >disable</button>
+    </div>    
+    <div> 
+        select2: <select id="test2"  style="width: 20%"  /><!-- 多选时加上multiple="multiple" 并在回显时，回传所选的值数组 -->
+        <input id="personid" type="hidden" name="personid"  />
+    </div>        
+
+<script src="js/jquery.1.11.2.min.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/i18n/zh-CN.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+    //静态select渲染
+    $('#test1').select2({
+        placeholder: "请选择",
+        language: "zh-CN"
+    });
+
+    $("#clear2").on("click", function () { //置空
+        $("#test1").val(null).trigger("change"); 
+    });
+
+    $("#setValue").on("click", function () { //设置某一个值
+        $("#test1").val("9").trigger("change"); 
+    });
+
+    $("#getValue").on("click", function () { //获取选中值
+        alert($("#test1").val());
+    });
+
+    $("#disable").on("click", function () { //启用
+        $("#test1").prop("disabled", true); 
+    });
+
+    $("#enable").on("click", function () { //禁用
+        $("#test1").prop("disabled", false); 
+    });
+
+    //select2动态加载数据
+    $("#test2").select2({
+        placeholder: "请选择",
+        language: "zh-CN",
+        ajax: {
+            url: "${ctx}/person/list.action",
+            dataType: 'json',
+            delay: 250,
+            data: function (term, page) {
+                console.log(term);
+                return {
+                    keyword : term,//输入的内容，会发给服务器进行查找
+                    //以下两行可以在数据量大的时候用到（当下拉框往下拉的时候会加载下一页），数据量不大的时候，可以直接注释
+                    pagesize : 20,//页面大小
+                    page : page //当前页
+                 };
+             },
+            results: function (data, page) { 
+　　　　　　　　　 var more = (page  ${tpagesize}) < data.total;//判断是还有记录
+                return {
+                    results: data.rows , more : more
+                };
+            }
+          },
+        escapeMarkup: function (markup) { return markup; }, 
+        //  minimumInputLength: 1,
+        formatResult: function(row) {//选中后select2显示的 内容
+            return row.name;
+        }, 
+        formatSelection: function(row) { //选择的时候，需要保存选中的id
+            $("#personid").val(row.id);
+            return row.name;//选择时需要显示的列表内容
+        }, 
+    });    
+});
+</script>                                            
+</body>
+</html>
